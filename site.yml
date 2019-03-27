@@ -1,0 +1,9 @@
+---
+- hosts: cloud
+  gather_facts: no
+  vars:
+   instancecount: 1
+  roles:
+    - {
+        role: instance   
+      }

@@ -1,0 +1,5 @@
+---
+- hosts: DEVSERVERS
+  tasks:
+  - name: ping
+    ping:

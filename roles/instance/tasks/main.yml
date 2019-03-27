@@ -1,0 +1,81 @@
+# tasks file for instance
+---
+- name: lunch an server
+  ec2:
+    key_name: naveen
+    region: ap-southeast-1
+    instance_type: t2.nano
+    image: ami-0dad20bd1b9c8c004
+    wait: yes
+    count: "{{ instancecount }}"
+    vpc_subnet_id: subnet-0ee4b13ab489b8fbc
+    assign_public_ip: yes
+    instance_tags:
+      Name: test_ansible
+    group_id: sg-0ab30b162aeb18e4a
+    user_data: |
+               #!/bin/bash
+               sudo apt-get update
+               sudo apt-get install python-minimal -y
+               python --version
+  register: ec2
+- debug:
+    var: ec2
+  
+ 
+#- name: gather facts and store them to a register
+#  ec2_instance_facts:
+#    filters:
+#      "tag:Name": "testing_ansible"
+#  register: server
+- name: delete hosts file if already present 
+  file:
+    path: /home/ubuntu/ansibleaws/hosts
+    state: absent
+    
+- name: creating a file, with all the servers list that are created by ec2 instance
+  lineinfile: 
+    path: /home/ubuntu/ansibleaws/hosts
+    line: '[DEVSERVERS]'
+    create: yes
+    
+- name: saving public ip of first host
+  lineinfile: 
+    dest: /home/ubuntu/ansibleaws/hosts
+    insertafter: "[DEVSERVERS]"
+    line: "{{ ec2.instances[0].public_ip }}"
+    state: present
+
+- name: wait for ssh
+  wait_for:
+    host: "{{ ec2.instances[0].public_ip }}"
+    port: 22
+    search_regex: OpenSSH
+    delay: 10
+    state: started
+  connection: local  
+  
+
+#  become: yes
+  
+#- name: saving public ip of second host
+#  lineinfile: 
+#    dest: ~/hosts
+#    insertafter: "[DEVSERVERS]" 
+#    line: "{{ ec2.instances[1].public_ip }}"
+#    state: present
+#  
+#- name: saving public ip
+#  lineinfile: 
+#    dest: ~/hosts
+#    insertafter: "[DEVSERVERS]" 
+#    #line: '{{ ec2.instances[ + {{ item }} + ].public_ip }}'
+#    #line: "{{ 'ec2.instances[' + '{{ item }}' + '].public_ip'}}"
+#    line: "{{ ec2.instances[item].public_ip }}"
+#    state: present
+#  with_sequence:  count=2
+#- name: add host to inventory file
+#  add_host:
+#    name: "{{ ec2.instances[0].public_ip }}"
+#    groups: DEVSERVERS
+#    inventory_dir: /home/ubuntu/ansibleaws/hosts

@@ -1,0 +1,17 @@
+---
+- hosts: DEVSERVERS
+  gather_facts: no
+  #vars:
+  # ansible_user_id: ubuntu
+  tasks:
+  - name: install python 
+    raw: sudo apt-get update -y && sudo apt-get install python-minimal -y 
+    args:
+      executable: /bin/bash
+  
+     
+- hosts: DEVSERVERS
+  roles:
+    - {
+        role: nvm        
+      }

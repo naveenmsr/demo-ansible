@@ -1,0 +1,13 @@
+---
+- name: copy ssh private key
+  copy: 
+    src: ~/.ssh/naveen
+    dest: ~/.ssh/naveen
+    mode: 0600    
+
+- name: Cloning hashcloud-infra repository
+  git:
+    repo: git@github.com:naveenmsr/demo-devconnector.git 
+    dest: ~/demo-devconnector
+    accept_hostkey: yes
+    key_file: ~/.ssh/naveen

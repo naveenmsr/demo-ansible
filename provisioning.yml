@@ -1,0 +1,32 @@
+---
+#- hosts: DEVSERVERS
+#  gather_facts: no
+#  tasks:
+#  - name: update 
+#    raw: sudo apt -y update   
+#    args:
+#      executable: /bin/bash
+#  - name: install python 
+#    raw: sudo apt -y install python-minimal 
+#    args:
+#      executable: /bin/bash
+
+- hosts: DEVSERVERS
+  roles:
+    - {
+        role: nvm        
+      }
+
+- hosts: DEVSERVERS
+  gather_facts: no
+  become: yes
+  roles:
+    - {
+        role: base
+      }
+      
+- hosts: DEVSERVERS
+  roles:
+   - {
+        role: main
+     }

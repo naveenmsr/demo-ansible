@@ -1,0 +1,16 @@
+- name: check for os version
+  apt_repository:
+    repo: "{{ item }}"
+    update_cache: yes
+    state: present
+  with_items:
+    - ppa:git-core/ppa
+    - ppa:ansible/ansible
+- name: installing dependencies
+  apt:
+    name: ['libssl-dev', 'libffi-dev', 'curl', 'build-essential', 'software-properties-common']
+    state: present
+- name: installing packages
+  apt:
+    name: ['screen', 'git', 'python3-pip', 'python3-boto3', 'python3-venv', 'ansible', 'awscli']
+    state: present

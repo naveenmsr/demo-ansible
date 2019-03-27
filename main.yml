@@ -1,0 +1,6 @@
+---
+- hosts: DEVSERVERS
+  roles:
+   - {
+        role: main
+     }

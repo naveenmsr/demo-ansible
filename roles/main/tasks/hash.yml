@@ -1,0 +1,61 @@
+#- name: make sure ssh is running
+#  shell: eval $(ssh-agent -s)
+#- name: loading ssh private key
+#  shell: ssh-add ~/.ssh/{{ private_key_name }}
+- name: copy ssh private key
+  copy: 
+    src: ~/.ssh/naveen
+    dest: ~/.ssh/naveen
+    mode: 0600
+- name: Cloning hashcloud-infra repository
+  git:
+    repo: git@github.com:HashCorpIO/hashcloud-infra.git 
+    dest: ~/.
+    accept_hostkey: yes
+    key_file: "{{ /var/www/.ssh/deploy_key }}"
+- name: cloneing pyhashcloud-processor repository
+  git:
+    repo: git@github.com:HashCorpIO/pyhashcloud-processor.git
+    dest: ~/.
+    accept_hostkey: yes
+    key_file: "{{ /var/www/.ssh/deploy_key }}"
+- name: Cloning the secrets repositor
+  git:
+    repo: git@github.com:HashCorpIO/secrets.git
+    dest: ~/pyhashcloud-processor
+    accept_hostkey: yes
+    key_file: "{{ /var/www/.ssh/deploy_key }}"
+- name: install the requirements
+  pip:
+    requirements: ~/pyhashcloud-processor/requirements.txt
+- name: Python Cloud Creator Under Progress and Running the Python Cloud Deletor in background
+  shell: | 
+    cd pyhashcloud-processor 
+    screen -dm -S PYTHONNETCREATOR python3 netCreator.py production
+    screen -dm -S PYTHONNETDELETOR python3 netDeleter.py production
+- name: Clone the hashcloud-webapp repository
+  git:
+    repo: git@github.com:HashCorpIO/hashcloud-webapp.git
+    dest: ~/.
+    accept_hostkey: yes
+    key_file: "{{ /var/www/.ssh/deploy_key }}"
+- name: Installing application required npm modules
+  shell: |
+    cd ~/hashcloud-webapp
+    npm install
+- name: Cloning the secrets repository
+  git:
+    repo: git@github.com:HashCorpIO/secrets.git
+    dest: ~/hashcloud-webapp
+    accept_hostkey: yes
+    key_file: "{{ /var/www/.ssh/deploy_key }}"
+- name: Running the Node Server in the background
+  shell: |
+    cd ~/hashcloud-webapp
+    screen -dm -S NODESERVER npm run server
+- name: Generating the RSA keys with fd name
+  shell: |
+    cd ~/.ssh
+    ssh-keygen -t rsa -f fd -P ""
+    cat ~/.ssh/fd.pub >> ~/.ssh/authorized_keys
+    cd ~

@@ -1,0 +1,7 @@
+---
+# tasks file for vpc
+- include: create.yaml
+  when: (state is defined and not state == "absent") or state is not defined
+
+- include: destroy.yaml
+  when: state is defined and state == "absent"

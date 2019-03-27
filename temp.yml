@@ -1,0 +1,7 @@
+- hosts: DEVSERVERS
+  gather_facts: no
+  tasks:
+  - name: install python 
+    raw: sudo apt-get update -y && sudo apt-get install python-minimal -y 
+    args:
+      executable: /bin/bash

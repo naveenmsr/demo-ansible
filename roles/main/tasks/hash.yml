@@ -4,27 +4,27 @@
 #  shell: ssh-add ~/.ssh/{{ private_key_name }}
 - name: copy ssh private key
   copy: 
-    src: ~/.ssh/naveen
-    dest: ~/.ssh/naveen
+    src: "{{ privateKeySourcepath }}"
+    dest: "{{ privateKeyDestinationpath }}"
     mode: 0600
 - name: Cloning hashcloud-infra repository
   git:
-    repo: git@github.com:HashCorpIO/hashcloud-infra.git 
-    dest: ~/.
+    repo: "{{ hashcloudInfraRepository }}" 
+    dest: "{{ hashcloudInfraRepoDestPath }}"
     accept_hostkey: yes
-    key_file: "{{ /var/www/.ssh/deploy_key }}"
+    key_file: "{{ hashcloud_server_testing_privatekeypath }}"
 - name: cloneing pyhashcloud-processor repository
   git:
-    repo: git@github.com:HashCorpIO/pyhashcloud-processor.git
-    dest: ~/.
+    repo: "{{ pyhashcloudProcessorRepository }}"
+    dest: "{{ pyhashcloudProcessorRepoDestPath }}"
     accept_hostkey: yes
-    key_file: "{{ /var/www/.ssh/deploy_key }}"
+    key_file: "{{ hashcloud_server_testing_privatekeypath }}"
 - name: Cloning the secrets repositor
   git:
-    repo: git@github.com:HashCorpIO/secrets.git
-    dest: ~/pyhashcloud-processor
+    repo: "{{ pyhashcloudProcessorSecretsRepo }}"
+    dest: "{{ pyhashcloudProcessorSecretsRepoDest }}"
     accept_hostkey: yes
-    key_file: "{{ /var/www/.ssh/deploy_key }}"
+    key_file: "{{ hashcloud_server_testing_privatekeypath }}"
 - name: install the requirements
   pip:
     requirements: ~/pyhashcloud-processor/requirements.txt
@@ -35,20 +35,34 @@
     screen -dm -S PYTHONNETDELETOR python3 netDeleter.py production
 - name: Clone the hashcloud-webapp repository
   git:
-    repo: git@github.com:HashCorpIO/hashcloud-webapp.git
-    dest: ~/.
+    repo: "{{ hashcloudWebAppRepository }}"
+    dest: "{{ hashcloudWebAppRepositoryDest }}"
     accept_hostkey: yes
-    key_file: "{{ /var/www/.ssh/deploy_key }}"
+    key_file: "{{ hashcloud_server_testing_privatekeypath }}"
+##
+#- name: check command module to run npm install
+#  command: npm install
+#  become_user: ubuntu
+#  args:
+#    chdir: /home/ubuntu/hashcloud-webapp/
+
 - name: Installing application required npm modules
-  shell: |
-    cd ~/hashcloud-webapp
-    npm install
+  shell: npm install
+  become_user: ubuntu
+  args:
+    chdir: ~/hashcloud-webapp/
+    executable: /bin/bash
+
+#- name: Install packages based on package.json.
+#  npm:
+#    path: ~/hashcloud-webapp/
+  
 - name: Cloning the secrets repository
   git:
-    repo: git@github.com:HashCorpIO/secrets.git
-    dest: ~/hashcloud-webapp
+    repo: "{{ hashcloudWebAppSecretsRepository }}"
+    dest: "{{ hashcloudWebAppSecretsRepoDest }}"
     accept_hostkey: yes
-    key_file: "{{ /var/www/.ssh/deploy_key }}"
+    key_file: "{{ hashcloud_server_testing_privatekeypath }}"
 - name: Running the Node Server in the background
   shell: |
     cd ~/hashcloud-webapp

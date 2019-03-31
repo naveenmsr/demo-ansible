@@ -2,3 +2,4 @@
 *hosts*
 *inventory*
 *.cfg
+vars.yml

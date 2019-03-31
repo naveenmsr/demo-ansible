@@ -12,6 +12,8 @@
 #      executable: /bin/bash
 
 - hosts: DEVSERVERS
+  vars_files:
+    - ./vars.yml 
   roles:
     - {
         role: nvm        
@@ -20,13 +22,17 @@
 - hosts: DEVSERVERS
   gather_facts: no
   become: yes
+  vars_files:
+    - ./vars.yml 
   roles:
     - {
         role: base
       }
       
-- hosts: DEVSERVERS
-  roles:
-   - {
-        role: main
-     }
+#- hosts: DEVSERVERS
+#  vars:
+#    hashcloud_server_testing_privatekeypath: ~/.ssh/hashcloud-server-testing-private
+#  roles:
+#   - {
+#        role: main
+#     }

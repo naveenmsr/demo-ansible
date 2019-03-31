@@ -2,23 +2,24 @@
 ---
 - name: lunch an server
   ec2:
-    key_name: naveen
-    region: ap-southeast-1
-    instance_type: t2.nano
-    image: ami-0dad20bd1b9c8c004
+    key_name: "{{ keyname }}"
+    region: "{{instance_region}}"
+    instance_type: "{{ instanceType }}"
+    image: "{{ imageId }}"
     wait: yes
     count: "{{ instancecount }}"
-    vpc_subnet_id: subnet-0ee4b13ab489b8fbc
+    vpc_subnet_id: "{{ VpcSubnetId }}"
     assign_public_ip: yes
     instance_tags:
-      Name: test_ansible
-    group_id: sg-0ab30b162aeb18e4a
+      Name: "{{ instanceName }}"
+    group_id: "{{ SgId }}"
     user_data: |
                #!/bin/bash
                sudo apt-get update
                sudo apt-get install python-minimal -y
                python --version
   register: ec2
+  tags: ec2
 - debug:
     var: ec2
   
@@ -30,18 +31,18 @@
 #  register: server
 - name: delete hosts file if already present 
   file:
-    path: /home/ubuntu/ansibleaws/hosts
+    path: "{{ HostFilePath }}"
     state: absent
     
 - name: creating a file, with all the servers list that are created by ec2 instance
   lineinfile: 
-    path: /home/ubuntu/ansibleaws/hosts
+    path: "{{ HostFilePath }}"
     line: '[DEVSERVERS]'
     create: yes
     
 - name: saving public ip of first host
   lineinfile: 
-    dest: /home/ubuntu/ansibleaws/hosts
+    dest: "{{ HostFilePath  }}"
     insertafter: "[DEVSERVERS]"
     line: "{{ ec2.instances[0].public_ip }}"
     state: present
@@ -53,7 +54,7 @@
     search_regex: OpenSSH
     delay: 10
     state: started
-  connection: local  
+  connection: local
   
 
 #  become: yes

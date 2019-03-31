@@ -1,9 +1,10 @@
 ---
 - hosts: cloud
   gather_facts: no
-  vars:
-   instancecount: 1
+  vars_files:
+    - ./vars.yml 
   roles:
     - {
-        role: instance   
+        role: instance
       }
+      

@@ -2,9 +2,14 @@
 # tasks file for nvm
 - name: installing nvm  
   shell: >
-    curl https://raw.githubusercontent.com/creationix/nvm/v0.34.0/install.sh | sh
+    curl https://raw.githubusercontent.com/creationix/nvm/v{{nvmVersion}}/install.sh | sh
     creates=/home/{{ ansible_user_id }}/.nvm/nvm.sh
+  args:
+    warn: False
+
 - name: Install node and set version
   shell: >
-    /bin/bash -c "source ~/.nvm/nvm.sh && nvm install 8.15.1 && nvm alias default 8.15.1"
+    /bin/bash -c "source ~/.nvm/nvm.sh && nvm install {{nodeVersion}} && nvm alias default {{nodeVersion}}"
     creates=/home/{{ ansible_user_id }}/.nvm/alias
+  args:
+    warn: False

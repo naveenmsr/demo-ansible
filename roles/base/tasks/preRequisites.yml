@@ -1,4 +1,6 @@
-- name: check for os version
+## adding repos and installing all the prerequired packages
+## if you need to add any extra packages, change it in vars.yml file.
+- name: adding repos to source.list
   apt_repository:
     repo: "{{ item }}"
     update_cache: yes
@@ -9,6 +11,7 @@
   apt:
     name: "{{ dependencies }}"
     state: present
+
 - name: installing packages
   apt:
     name: "{{ packages }}"

@@ -1,4 +1,5 @@
-# tasks file for instance
+# tasks file for instance 
+# launches an instance check vars.yml file for changeing specs of the instance
 ---
 - name: lunch an server
   ec2:
@@ -20,32 +21,36 @@
                python --version
   register: ec2
   tags: ec2
-- debug:
-    var: ec2
-  
+
+# if you want to debug the ec2 variables uncomment following two lines
+#- debug:
+#    var: ec2
  
-#- name: gather facts and store them to a register
-#  ec2_instance_facts:
-#    filters:
-#      "tag:Name": "testing_ansible"
-#  register: server
+# if hosts file exits already, deletes it
+
 - name: delete hosts file if already present 
   file:
     path: "{{ HostFilePath }}"
     state: absent
-    
+
+# creates an new hosts file 
+
 - name: creating a file, with all the servers list that are created by ec2 instance
   lineinfile: 
     path: "{{ HostFilePath }}"
     line: '[DEVSERVERS]'
     create: yes
-    
+
+# saves ip of newly launched into hosts file
+
 - name: saving public ip of first host
   lineinfile: 
     dest: "{{ HostFilePath  }}"
     insertafter: "[DEVSERVERS]"
     line: "{{ ec2.instances[0].public_ip }}"
     state: present
+
+# waits for ssh get started on the server
 
 - name: wait for ssh
   wait_for:
@@ -55,28 +60,3 @@
     delay: 10
     state: started
   connection: local
-  
-
-#  become: yes
-  
-#- name: saving public ip of second host
-#  lineinfile: 
-#    dest: ~/hosts
-#    insertafter: "[DEVSERVERS]" 
-#    line: "{{ ec2.instances[1].public_ip }}"
-#    state: present
-#  
-#- name: saving public ip
-#  lineinfile: 
-#    dest: ~/hosts
-#    insertafter: "[DEVSERVERS]" 
-#    #line: '{{ ec2.instances[ + {{ item }} + ].public_ip }}'
-#    #line: "{{ 'ec2.instances[' + '{{ item }}' + '].public_ip'}}"
-#    line: "{{ ec2.instances[item].public_ip }}"
-#    state: present
-#  with_sequence:  count=2
-#- name: add host to inventory file
-#  add_host:
-#    name: "{{ ec2.instances[0].public_ip }}"
-#    groups: DEVSERVERS
-#    inventory_dir: /home/ubuntu/ansibleaws/hosts

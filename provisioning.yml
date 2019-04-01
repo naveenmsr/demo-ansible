@@ -1,16 +1,4 @@
 ---
-#- hosts: DEVSERVERS
-#  gather_facts: no
-#  tasks:
-#  - name: update 
-#    raw: sudo apt -y update   
-#    args:
-#      executable: /bin/bash
-#  - name: install python 
-#    raw: sudo apt -y install python-minimal 
-#    args:
-#      executable: /bin/bash
-
 - hosts: DEVSERVERS
   vars_files:
     - ./vars.yml 
@@ -28,11 +16,3 @@
     - {
         role: base
       }
-      
-#- hosts: DEVSERVERS
-#  vars:
-#    hashcloud_server_testing_privatekeypath: ~/.ssh/hashcloud-server-testing-private
-#  roles:
-#   - {
-#        role: main
-#     }

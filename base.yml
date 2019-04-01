@@ -1,13 +1,4 @@
 ---
-#- hosts: all
-#  tasks:
-#  - name: add host to inventory file
-#    add_host:
-#      name: 192.168.10.1
-#      groups: DEVSERVERS
-#      inventory_dir: /home/ubuntu/ansibleaws/hosts
-####
-
 - hosts: DEVSERVERS
   gather_facts: no
   become: yes
@@ -15,7 +6,4 @@
     - {
         role: base
       }
-    
-#- hosts: DEVSERVERS
-#  tasks:
-#  - ping:
+

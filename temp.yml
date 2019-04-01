@@ -1,7 +1,14 @@
 - hosts: DEVSERVERS
   gather_facts: no
   tasks:
-  - name: install python 
-    raw: sudo apt-get update -y && sudo apt-get install python-minimal -y 
-    args:
-      executable: /bin/bash
+#  - name: Running the Node Server in the background
+#    shell: touch temp.txt
+#    args:
+#      chdir: ~/hashcloud-webapp
+# path for npm installation: /home/ubuntu/.nvm/versions/node/v8.15.1/bin/npm
+  - name: Install packages based on package.json.
+    npm:
+      path: /home/ubuntu/hashcloud-webapp
+      executable: ~/.nvm/versions/node/v8.15.1/bin/npm
+      state: present
+    

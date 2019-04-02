@@ -1,14 +1,14 @@
 - hosts: DEVSERVERS
   gather_facts: no
   tasks:
-#  - name: Running the Node Server in the background
-#    shell: touch temp.txt
-#    args:
-#      chdir: ~/hashcloud-webapp
+  - name: Running the Node Server in the background
+    shell: "npm install" 
+    args:
+      chdir: ~/hashcloud-webapp
+      executable: /bin/bash
 # path for npm installation: /home/ubuntu/.nvm/versions/node/v8.15.1/bin/npm
-  - name: Install packages based on package.json.
-    npm:
-      path: /home/ubuntu/hashcloud-webapp
-      executable: ~/.nvm/versions/node/v8.15.1/bin/npm
-      state: present
-    
+#  - name: Install packages based on package.json.
+#    npm:
+#      path: /home/ubuntu/hashcloud-webapp
+#      executable: ~/.nvm/versions/node/v8.15.1/bin/npm
+#      state: present

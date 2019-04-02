@@ -1,0 +1,49 @@
+# variables for instance roles 
+
+keyName: "naveen" 
+instanceRegion: "ap-southeast-1"
+instanceType: "t2.nano"
+imageId: "ami-0dad20bd1b9c8c004"
+instanceCount: 1
+vpcSubnetId: "subnet-0ee4b13ab489b8fbc"
+instanceName: "test.cloud.hashcloud.com"
+sgId: "sg-0ab30b162aeb18e4a"
+hostFilePath: "/home/ubuntu/ansibleaws/hosts"
+
+#variables required for base role
+
+reposRequired: 
+    - ppa:git-core/ppa
+    - ppa:ansible/ansible
+
+dependencies: ['libssl-dev', 'libffi-dev', 'curl', 'build-essential', 'software-properties-common']
+
+packages: ['screen', 'git', 'python3-pip', 'python3-boto3', 'python3-venv', 'ansible', 'awscli' ,'python-pip']
+
+# variables nvm role
+
+nvmVersion: 0.34.0
+nodeVersion: 8.15.1
+
+# variables for main role
+
+privateKeySourcepath: "~/.ssh/hashcloud-server-testing-private"
+privateKeyDestinationpath: "~/.ssh/hashcloud-server-testing-private"
+hashcloud_server_testing_privatekeypath: "~/.ssh/hashcloud-server-testing-private"
+
+gitRepos:
+  -
+    repo: hashcloud-infra
+    dest: ~/hashcloud-infra
+  -
+    repo: pyhashcloud-processor
+    dest: ~/pyhashcloud-processor
+  -
+    repo: secrets
+    dest: ~/pyhashcloud-processor/secrets
+  -
+    repo: hashcloud-webapp
+    dest: ~/hashcloud-webapp
+  -
+    repo: secrets
+    dest: ~/hashcloud-webapp/secrets

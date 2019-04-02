@@ -7,59 +7,36 @@
 ## dowloads hashcloud-infra repository from git
 - name: Cloning hashcloud-infra repository
   git:
-    repo: "{{ hashcloudInfraRepository }}" 
-    dest: "{{ hashcloudInfraRepoDestPath }}"
+    repo: "git@github.com:HashCorpIO/{{item.repo}}.git" 
+    dest: "{{ item.dest }}"
     accept_hostkey: yes
     key_file: "{{ hashcloud_server_testing_privatekeypath }}"
-## downloads pyhashcloud-processor repository from git    
-- name: cloneing pyhashcloud-processor repository
-  git:
-    repo: "{{ pyhashcloudProcessorRepository }}"
-    dest: "{{ pyhashcloudProcessorRepoDestPath }}"
-    accept_hostkey: yes
-    key_file: "{{ hashcloud_server_testing_privatekeypath }}"
-## downloads secrets repository into already downloaded pyhashcloud-processor repository.
-- name: Cloning the secrets repositor
-  git:
-    repo: "{{ pyhashcloudProcessorSecretsRepo }}"
-    dest: "{{ pyhashcloudProcessorSecretsRepoDest }}"
-    accept_hostkey: yes
-    key_file: "{{ hashcloud_server_testing_privatekeypath }}"
+  with_items: "{{gitRepos}}"  
+# here pip module with pip3 executable
 ## installs requirements and launchs screens for netCreator.py and netDeleter.
 - name: Python Cloud Creator Under Progress and Running the Python Cloud Deletor in background
   shell: | 
-    cd pyhashcloud-processor
     pip3 install -r requirements.txt
     sleep 2 
     screen -dm -S PYTHONNETCREATOR python3 netCreator.py production
     sleep 2
     screen -dm -S PYTHONNETDELETOR python3 netDeleter.py production
-
-#downloads hashcloud-webapp repository from git hub 
-
-- name: Clone the hashcloud-webapp repository
-  git:
-    repo: "{{ hashcloudWebAppRepository }}"
-    dest: "{{ hashcloudWebAppRepositoryDest }}"
-    accept_hostkey: yes
-    key_file: "{{ hashcloud_server_testing_privatekeypath }}"
-
-# downloads secrets repository 
-
-- name: Cloning the secrets repository
-  git:
-    repo: "{{ hashcloudWebAppSecretsRepository }}"
-    dest: "{{ hashcloudWebAppSecretsRepoDest }}"
-    accept_hostkey: yes
-    key_file: "{{ hashcloud_server_testing_privatekeypath }}"
+  args:
+    chdir: ~/pyhashcloud-processor
+# downloading packages from package.json
+# problem here , npm install not working this code
+- name: Running the Node Server in the background
+  shell: "npm install"
+  args:
+    chdir: ~/hashcloud-webapp
+# problem here in this code
 
 # dowloads required packages from package.json and launches NODESERVER
 
 - name: Running the Node Server in the background
-  shell: |
-    cd ~/hashcloud-webapp
-    npm install
-    screen -dm -S NODESERVER npm run server
+  shell: "screen -dm -S NODESERVER npm run server"
+  args:
+    chdir: ~/hashcloud-webapp
 
 # generetes rsa keys 
 
@@ -69,4 +46,4 @@
     cat ~/.ssh/fd.pub >> ~/.ssh/authorized_keys
   args:
     chdir: ~/.ssh
-    creates: ~/authorizedkeyscreated
+    creates: ~/authorizedkeyscreated.txt

@@ -13,6 +13,10 @@
     key_file: "{{ hashcloud_server_testing_privatekeypath }}"
   with_items: "{{gitRepos}}"  
 # here pip module with pip3 executable
+#- name: install requirements
+#  pip:
+#    path: ~/pyhashcloud-processor/requirements.txt
+#    executable: /usr/bin/pip3
 ## installs requirements and launchs screens for netCreator.py and netDeleter.
 - name: Python Cloud Creator Under Progress and Running the Python Cloud Deletor in background
   shell: | 

@@ -16,3 +16,7 @@
   apt:
     name: "{{ packages }}"
     state: present
+
+- name: installing docker-py using pip
+  pip:
+    name: "{{ pipPackages }}"

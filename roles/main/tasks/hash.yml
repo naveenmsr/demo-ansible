@@ -31,6 +31,8 @@
 # problem here , npm install not working this code
 - name: Running the Node Server in the background
   shell: "npm install"
+  #become: yes
+  become_user: ubuntu
   args:
     chdir: ~/hashcloud-webapp
 # problem here in this code

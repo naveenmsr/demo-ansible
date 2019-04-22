@@ -30,6 +30,8 @@ pipPackages: docker-py
 nvmVersion: 0.34.0
 nodeVersion: 8.15.1
 
+nodejs_version: "8.x"
+
 # variables for main role
 
 privateKeySourcepath: "~/.ssh/hashcloud-server-testing-private"
